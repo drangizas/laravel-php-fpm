@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcurl4-openssl-dev \
     libicu-dev \
     libzip-dev \
+    libfreetype-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
     pdo_pgsql \
     pgsql \
@@ -22,6 +27,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     soap \
     curl \
     pcntl \
+    gd \
+    exif \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -36,7 +43,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM debian:trixie-slim AS base
 
 LABEL org.opencontainers.image.title="php-fpm base for laravel"
-LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (pgsql, intl, zip, bcmath, soap, pcntl, redis), composer and app runtime tools."
+LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (pgsql, intl, zip, bcmath, soap, pcntl, gd, exif, redis), composer and app runtime tools."
 
 ENV PHP_INI_DIR=/usr/local/etc/php
 
@@ -57,6 +64,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 \
     libzip5 \
     zlib1g \
+    libfreetype6 \
+    libjpeg62-turbo \
+    libpng16-16t64 \
+    libwebp7 \
     # app runtime tools
     libfcgi-bin \
     procps \
