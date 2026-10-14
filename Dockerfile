@@ -75,6 +75,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnginx-mod-http-headers-more-filter \
     supervisor \
     gosu \
+    poppler-utils \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
