@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libwebp-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
+    pdo_mysql \
     pdo_pgsql \
     pgsql \
     intl \
@@ -43,7 +44,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM debian:trixie-slim AS base
 
 LABEL org.opencontainers.image.title="php-fpm base for laravel"
-LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (pgsql, intl, zip, bcmath, soap, pcntl, gd, exif, redis), composer and app runtime tools."
+LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (mysql, pgsql, intl, zip, bcmath, soap, pcntl, gd, exif, redis), composer and app runtime tools."
 
 ENV PHP_INI_DIR=/usr/local/etc/php
 
