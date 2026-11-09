@@ -86,8 +86,21 @@ COPY --from=extensions-builder /usr/local/sbin/php-fpm /usr/local/sbin/php-fpm
 COPY --from=extensions-builder /usr/local/lib/php/ /usr/local/lib/php/
 COPY --from=extensions-builder /usr/local/etc/ /usr/local/etc/
 
+# FPM pool defaults; override per deployment via container env.
+ENV PHP_FPM_MAX_CHILDREN=20 \
+    PHP_FPM_START_SERVERS=4 \
+    PHP_FPM_MIN_SPARE_SERVERS=2 \
+    PHP_FPM_MAX_SPARE_SERVERS=6 \
+    PHP_FPM_MAX_REQUESTS=500 \
+    PHP_FPM_REQUEST_TERMINATE_TIMEOUT=60s
+
+COPY conf/php/zz-production.ini $PHP_INI_DIR/conf.d/zz-production.ini
+COPY conf/php-fpm/zz-pool.conf /usr/local/etc/php-fpm.d/zz-pool.conf
+
+# Fail the build on a broken ini or FPM config rather than at container start.
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
-    && php -m > /dev/null
+    && php -m > /dev/null \
+    && php-fpm --test
 
 WORKDIR /var/www
 
