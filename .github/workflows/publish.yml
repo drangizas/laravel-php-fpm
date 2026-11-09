@@ -6,6 +6,11 @@ on:
     paths:
       - Dockerfile
       - .github/workflows/publish.yml
+      - conf/**
+  # Weekly rebuild picks up Debian and PHP patch releases even when nothing
+  # here changed (the app repo's Dependabot then bumps the pinned digest).
+  schedule:
+    - cron: '0 4 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -53,5 +58,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Scheduled runs skip the layer cache so apt-get actually fetches
+          # updated packages even when the upstream base digests are unchanged.
+          no-cache: ${{ github.event_name == 'schedule' }}
+          pull: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
