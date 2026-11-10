@@ -2,7 +2,7 @@
 
 Slim php-fpm base image for Laravel apps: PHP 8.5 on `debian:trixie-slim` with
 pdo_mysql, pdo_pgsql, pgsql, intl, zip, bcmath, soap, curl, pcntl, gd (freetype, jpeg,
-webp), exif, redis, Composer, nginx, supervisor, gosu and poppler-utils
+webp), exif, imagick (ImageMagick 7 with HEIC via libheif), redis, Composer, nginx, supervisor, gosu and poppler-utils
 (pdfinfo, pdftotext).
 
 Pushing a `Dockerfile` change to `main` (or running the workflow manually)
