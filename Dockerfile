@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg62-turbo-dev \
     libpng-dev \
     libwebp-dev \
+    libmagickwand-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" \
     pdo_mysql \
@@ -30,8 +31,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pcntl \
     gd \
     exif \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
+    && pecl install redis imagick \
+    && docker-php-ext-enable redis imagick \
     && curl -fsSL https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && apt-get autoremove -y \
     && apt-get clean \
@@ -44,7 +45,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 FROM debian:trixie-slim AS base
 
 LABEL org.opencontainers.image.title="php-fpm base for laravel"
-LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (mysql, pgsql, intl, zip, bcmath, soap, pcntl, gd, exif, redis), composer and app runtime tools."
+LABEL org.opencontainers.image.description="Reusable php-fpm base image for laravel deployments; includes php extensions (mysql, pgsql, intl, zip, bcmath, soap, pcntl, gd, exif, imagick, redis), composer and app runtime tools."
 
 ENV PHP_INI_DIR=/usr/local/etc/php
 
@@ -69,6 +70,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libjpeg62-turbo \
     libpng16-16t64 \
     libwebp7 \
+    # imagick: ImageMagick 7 core plus libheif and its decoder/encoder plugins (HEIC)\
+    libmagickwand-7.q16-10 \
+    libheif1 \
+    libheif-plugin-libde265 \
+    libheif-plugin-x265 \
     # app runtime tools
     libfcgi-bin \
     procps \
